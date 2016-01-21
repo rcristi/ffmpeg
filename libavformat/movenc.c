@@ -3218,6 +3218,14 @@ static int mov_write_moov_tag(AVIOContext *pb, MOVMuxContext *mov,
 
         if (mov->tracks[i].entry)
             build_chunks(&mov->tracks[i]);
+
+		MOVTrack *track = &mov->tracks[i];
+		if (s->streams[i]->tref_id){
+			track->tref_tag = MKTAG('v', 'd', 'e', 'p');
+			track->tref_id = mov->tracks[track->src_track].track_id;
+			track->flags = 0;
+		}
+
     }
 
     if (mov->chapter_track)
