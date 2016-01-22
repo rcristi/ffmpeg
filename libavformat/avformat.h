@@ -1193,6 +1193,16 @@ typedef struct AVStream {
      */
     AVRational display_aspect_ratio;
 
+	/**
+	* For dependent track .
+	*/
+	int tref_id;
+
+	/**
+	* For dependent track type.
+	*/
+	int tref_tag_type;
+
     struct FFFrac *priv_pts;
 
     /**
@@ -1200,6 +1210,8 @@ typedef struct AVStream {
      * Must not be accessed in any way by callers.
      */
     AVStreamInternal *internal;
+
+
 } AVStream;
 
 AVRational av_stream_get_r_frame_rate(const AVStream *s);
