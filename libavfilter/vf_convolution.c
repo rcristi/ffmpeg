@@ -103,7 +103,7 @@ static int config_input(AVFilterLink *inlink)
     if ((ret = av_image_fill_linesizes(s->planewidth, inlink->format, inlink->w)) < 0)
         return ret;
 
-    s->planeheight[1] = s->planeheight[2] = FF_CEIL_RSHIFT(inlink->h, desc->log2_chroma_h);
+    s->planeheight[1] = s->planeheight[2] = AV_CEIL_RSHIFT(inlink->h, desc->log2_chroma_h);
     s->planeheight[0] = s->planeheight[3] = inlink->h;
 
     s->nb_planes = av_pix_fmt_count_planes(inlink->format);
@@ -163,7 +163,7 @@ static void filter_3x3(ConvolutionContext *s, AVFrame *in, AVFrame *out, int pla
                       p2[x] *     matrix[7] +
                       p2[x + 1] * matrix[8];
             sum = (int)(sum * rdiv + bias + 0.5f);
-            dst[x] = av_clip(sum, 0, 255);
+            dst[x] = av_clip_uint8(sum);
         }
 
         p0 = p1;
@@ -218,7 +218,7 @@ static void filter_5x5(ConvolutionContext *s, AVFrame *in, AVFrame *out, int pla
                 sum += *(array[i] + x) * matrix[i];
             }
             sum = (int)(sum * rdiv + bias + 0.5f);
-            dst[x] = av_clip(sum, 0, 255);
+            dst[x] = av_clip_uint8(sum);
         }
 
         p0 = p1;
@@ -332,4 +332,5 @@ AVFilter ff_vf_convolution = {
     .query_formats = query_formats,
     .inputs        = convolution_inputs,
     .outputs       = convolution_outputs,
+    .flags         = AVFILTER_FLAG_SUPPORT_TIMELINE_GENERIC,
 };
